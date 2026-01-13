@@ -1,0 +1,165 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TabManager from '../components/TabManager.astro';
+---
+
+<Layout title="Otomasi Invoice">
+    <main class="max-w-6xl mx-auto p-6 lg:p-10 pb-20">
+    
+        <header class="relative overflow-hidden bg-white/80 backdrop-blur-xl border border-white/50 shadow-2xl shadow-blue-900/5 rounded-[2.5rem] p-8 mb-10 transition-all duration-300 hover:shadow-blue-900/10">
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-widest mb-3 border border-blue-100">
+                        <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                        PT Rajawali Services
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-2">
+                        Buat Invoice <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Baru</span>
+                    </h1>
+                    <p class="text-slate-500 text-lg max-w-lg">Platform otomasi invoice.</p>
+                </div>
+                <div class="hidden sm:flex bg-gradient-to-br from-blue-600 to-indigo-600 p-4 rounded-2xl shadow-lg shadow-blue-500/30 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <i class="ph ph-receipt text-4xl text-white"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Form Container -->
+        <form id="invoiceMainForm" class="space-y-8">
+            
+            <!-- SECTION 1: DATA CUSTOMER -->
+            <section class="bg-white/60 backdrop-blur-md border border-white/50 rounded-[2rem] p-8 shadow-xl shadow-slate-200/50">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
+                        <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-100 text-blue-600"><i class="ph ph-user text-xl"></i></span>
+                        Data Pelanggan
+                    </h2>
+                    <p class="text-slate-400 text-sm mt-1 ml-13">Informasi kontak penerima invoice.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="group">
+                        <label class="block text-sm font-bold text-slate-700 mb-3 group-focus-within:text-blue-600 transition-colors">Nama Pelanggan</label>
+                        <input type="text" name="customer_name" required 
+                            class="input-modern w-full px-5 py-4 rounded-2xl text-base shadow-sm border border-slate-200" placeholder="PT. Maju Mundur">
+                    </div>
+
+                    <div class="group">
+                        <label class="block text-sm font-bold text-slate-700 mb-3 group-focus-within:text-blue-600 transition-colors">Email Pelanggan</label>
+                        <input type="email" name="customer_email" required 
+                            class="input-modern w-full px-5 py-4 rounded-2xl text-base shadow-sm border border-slate-200" placeholder="email@perusahaan.com">
+                    </div>
+
+                    <div class="md:col-span-2 group">
+                        <label class="block text-sm font-bold text-slate-700 mb-3 group-focus-within:text-blue-600 transition-colors">Alamat Lengkap</label>
+                        <textarea name="customer_address" required rows="3"
+                            class="input-modern w-full px-5 py-4 rounded-2xl text-base shadow-sm border border-slate-200 resize-none" placeholder="Jalan Raya No. 1..."></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: DETAIL PEMESANAN -->
+            <section class="bg-white/60 backdrop-blur-md border border-white/50 rounded-[2rem] p-8 shadow-xl shadow-slate-200/50">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
+                        <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600"><i class="ph ph-calendar-check text-xl"></i></span>
+                        Detail Pemesanan
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="group">
+                        <label class="block text-sm font-bold text-slate-700 mb-3 group-focus-within:text-blue-600 transition-colors">Tanggal Pemesanan</label>
+                        <input type="date" name="order_date" required 
+                            class="input-modern w-full px-5 py-4 rounded-2xl text-base shadow-sm border border-slate-200">
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: TABS -->
+            <section class="bg-white/80 backdrop-blur-xl border border-white/50 rounded-[2.5rem] p-8 shadow-2xl shadow-slate-300/50 overflow-visible">
+                
+                <!-- Tab Headers -->
+                <div class="flex space-x-2 bg-slate-100/50 p-2 rounded-2xl mb-10 overflow-x-auto no-scrollbar max-w-max">
+                    <button type="button" onclick="setActiveTab('hotel')" id="tab-hotel" class="tab-btn px-8 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center space-x-2 whitespace-nowrap hover:shadow-md">
+                        <i class="ph ph-house text-lg"></i> <span>Hotel</span>
+                    </button>
+                    <button type="button" onclick="setActiveTab('flight')" id="tab-flight" class="tab-btn px-8 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center space-x-2 whitespace-nowrap hover:shadow-md">
+                        <i class="ph ph-airplane text-lg"></i> <span>Pesawat</span>
+                    </button>
+                    <button type="button" onclick="setActiveTab('train')" id="tab-train" class="tab-btn px-8 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center space-x-2 whitespace-nowrap hover:shadow-md">
+                        <i class="ph ph-train text-lg"></i> <span>Kereta</span>
+                    </button>
+                    <button type="button" onclick="setActiveTab('activity')" id="tab-activity" class="tab-btn px-8 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center space-x-2 whitespace-nowrap hover:shadow-md">
+                        <i class="ph ph-person-simple-swim"></i> <span>Kegiatan</span>
+                    </button>
+                </div>
+
+                <div id="tab-content-area">
+                    <TabManager client:load />
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-slate-100 flex justify-end">
+                    <button type="button" onclick="submitForm()" class="group relative overflow-hidden bg-slate-900 hover:bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-blue-900/20 transition-all duration-300 transform hover:-translate-y-1 flex items-center">
+                        <span class="relative z-10 flex items-center">
+                            Buat Invoice Sekarang
+                            <i class="ph ph-arrow-right ml-3 text-xl group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                        <div class="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </button>
+                </div>
+            </section>
+
+        </form>
+    </main>
+</Layout>
+
+<script is:inline>
+    let activeTab = 'hotel';
+
+    window.setActiveTab = function(tab) {
+        activeTab = tab;
+        updateTabStyles(tab);
+        
+        const event = new CustomEvent('switch-tab', { detail: { tab } });
+        document.dispatchEvent(event);
+    }
+
+    function updateTabStyles(tab) {
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(btn => {
+            btn.classList.remove('bg-white', 'text-blue-600', 'shadow-md', 'scale-105');
+            btn.classList.add('text-slate-500', 'hover:text-slate-700', 'hover:bg-white/50');
+
+            if(btn.id === `tab-${tab}`) {
+                btn.classList.remove('text-slate-500', 'hover:text-slate-700', 'hover:bg-white/50');
+                btn.classList.add('bg-white', 'text-blue-600', 'shadow-md', 'scale-105');
+            }
+        });
+    }
+
+    window.submitForm = function() {
+        const form = document.getElementById('invoiceMainForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const customerData = {
+            customer_name: form.querySelector('input[name="customer_name"]').value,
+            customer_email: form.querySelector('input[name="customer_email"]').value,
+            customer_address: form.querySelector('textarea[name="customer_address"]').value,
+            order_date: form.querySelector('input[name="order_date"]').value
+        };
+
+        const event = new CustomEvent('submit-invoice', { 
+            detail: { 
+                globalData: customerData 
+            } 
+        });
+        document.dispatchEvent(event);
+    }
+    
+    updateTabStyles('hotel');
+</script>

@@ -1,0 +1,505 @@
+
+<div id="dynamic-form-container" class="fade-in">
+</div>
+
+<style>
+    .markup-group {
+        display: flex;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: all 0.2s ease;
+        border: 1px solid #e2e8f0;
+        background-color: #f8fafc;
+    }
+    
+    .markup-group:focus-within {
+        border-color: #3b82f6;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+    
+    .markup-select {
+        border: none !important;
+        background-color: transparent !important;
+        padding-right: 2rem;
+    }
+    .markup-select option {
+        background-color: white;
+        color: black;
+    }
+    
+    .markup-input {
+        border: none !important;
+        background-color: transparent !important;
+        border-left: 1px solid #e2e8f0 !important;
+        text-align: center;
+    }
+    
+    .hidden-input {
+        display: none;
+    }
+</style>
+
+<template id="tpl-hotel-item">
+    <div class="item-group bg-white border border-slate-100/80 rounded-3xl p-6 mb-6 relative group shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-100/30 transition-all duration-300">
+        <button type="button" onclick="this.parentElement.remove()" class="absolute top-5 right-5 text-slate-300 hover:text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition-all duration-200">
+            <i class="ph ph-trash text-xl"></i>
+        </button>
+        <div class="pr-10">
+            <h4 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <span class="p-2 bg-blue-50 rounded-lg text-blue-600"><i class="ph ph-bed"></i></span> Detail Hotel
+            </h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Lokasi Akomodasi</label>
+                    <input type="text" name="location" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kode Booking</label>
+                    <input type="text" name="booking_code" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tipe Kamar</label>
+                    <input type="text" name="room_type" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check In</label>
+                    <input type="date" name="checkin" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check Out</label>
+                    <input type="date" name="checkout" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Guest Name</label>
+                    <input type="text" name="guest_name" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                </div>
+            </div>
+
+            <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 mb-6">
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Keterangan</label>
+                <textarea name="remarks" rows="2" class="input-modern w-full px-4 py-3 bg-white rounded-xl border border-slate-100 text-slate-700"></textarea>
+            </div>
+
+            <!-- Financial Section -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Dasar</label>
+                    <input type="number" name="base_price" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 font-bold text-slate-800" placeholder="0">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qty</label>
+                    <input type="number" name="quantity" required min="1" value="1" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fee Markup (%)</label>
+                    <div class="markup-group h-[46px]">
+                        <select onchange="toggleCustomMarkup(this)" class="markup-select px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none" name="markup">
+                            <option value="5">5%</option>
+                            <option value="10">10%</option>
+                            <option value="15">15%</option>
+                            <option value="20">20%</option>
+                            <option value="25">25%</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                        <input type="number" name="markup_custom" class="hidden-input markup-input w-20 px-2 py-2 text-sm font-bold text-slate-800 focus:outline-none" placeholder="%" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- 2. TEMPLATE PESAWAT -->
+<template id="tpl-flight-item">
+    <div class="item-group bg-white border border-slate-100/80 rounded-3xl p-6 mb-6 relative group shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-100/30 transition-all duration-300">
+        <button type="button" onclick="this.parentElement.remove()" class="absolute top-5 right-5 text-slate-300 hover:text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition-all duration-200">
+            <i class="ph ph-trash text-xl"></i>
+        </button>
+        <div class="pr-10">
+            <h4 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <span class="p-2 bg-indigo-50 rounded-lg text-indigo-600"><i class="ph ph-airplane-tilt"></i></span> Detail Penerbangan
+            </h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Rute Pesawat</label>
+                    <input type="text" name="route" required placeholder="Jakarta (CGK) - Bali (DPS)" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kode Booking</label>
+                    <input type="text" name="booking_code" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tanggal Keberangkatan</label>
+                    <input type="date" name="depart_date" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Passenger</label>
+                    <input type="text" name="passenger_name" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Seat</label>
+                    <input type="text" name="seat" required placeholder="Ex: 14A" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                </div>
+            </div>
+            
+            <!-- Financial Section -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Dasar</label>
+                    <input type="number" name="base_price" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 font-bold text-slate-800" placeholder="0">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qty</label>
+                    <input type="number" name="quantity" required min="1" value="1" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fee Markup (%)</label>
+                    <div class="markup-group h-[46px]">
+                        <select onchange="toggleCustomMarkup(this)" class="markup-select px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none">
+                            <option value="5">5%</option>
+                            <option value="10">10%</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                        <input type="number" name="markup_custom" class="hidden-input markup-input w-20 px-2 py-2 text-sm font-bold text-slate-800 focus:outline-none" placeholder="%" disabled>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Admin Fee</label>
+                    <input type="number" name="admin_fee" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700" placeholder="0">
+                </div>
+            </div>
+            <div class="mt-4">
+                 <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Keterangan</label>
+                 <input type="text" name="remarks" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- 3. TEMPLATE KERETA -->
+<template id="tpl-train-item">
+    <div class="item-group bg-white border border-slate-100/80 rounded-3xl p-6 mb-6 relative group shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-100/30 transition-all duration-300">
+        <button type="button" onclick="this.parentElement.remove()" class="absolute top-5 right-5 text-slate-300 hover:text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition-all duration-200">
+            <i class="ph ph-trash text-xl"></i>
+        </button>
+        <div class="pr-10">
+            <h4 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <span class="p-2 bg-emerald-50 rounded-lg text-emerald-600"><i class="ph ph-train"></i></span> Detail Kereta
+            </h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Rute Kereta</label>
+                    <input type="text" name="route" required placeholder="Gambir - Yogyakarta" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kode Booking</label>
+                    <input type="text" name="booking_code" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tanggal Keberangkatan</label>
+                    <input type="date" name="depart_date" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Passenger</label>
+                    <input type="text" name="passenger_name" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Seat / Wagon</label>
+                    <input type="text" name="seat" required placeholder="Ex: 3A" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                </div>
+            </div>
+            
+            <!-- Financial Section -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Dasar</label>
+                    <input type="number" name="base_price" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 font-bold text-slate-800" placeholder="0">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qty</label>
+                    <input type="number" name="quantity" required min="1" value="1" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fee Markup (%)</label>
+                    <div class="markup-group h-[46px]">
+                        <select onchange="toggleCustomMarkup(this)" class="markup-select px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none">
+                            <option value="5">5%</option>
+                            <option value="10">10%</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                        <input type="number" name="markup_custom" class="hidden-input markup-input w-20 px-2 py-2 text-sm font-bold text-slate-800 focus:outline-none" placeholder="%" disabled>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Admin Fee</label>
+                    <input type="number" name="admin_fee" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700" placeholder="0">
+                </div>
+            </div>
+            <div class="mt-4">
+                 <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Keterangan</label>
+                 <input type="text" name="remarks" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="tpl-activity-container">
+    <div class="flex flex-col lg:flex-row gap-8">
+        <div class="lg:w-5/12">
+            <div class="sticky top-4 bg-white border border-slate-100/80 rounded-3xl p-8 shadow-xl shadow-blue-100/20 backdrop-blur-sm">
+                <h4 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                    <span class="p-2 bg-orange-50 rounded-lg text-orange-500"><i class="ph ph-info"></i></span> Info Paket
+                </h4>
+                
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Paket</label>
+                        <input type="text" name="package_name" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check In</label>
+                            <input type="date" name="checkin" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check Out</label>
+                            <input type="date" name="checkout" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                         <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Pax</label>
+                            <input type="number" name="pax" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Paket</label>
+                            <input type="number" name="base_price" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Down Payment</label>
+                        <input type="number" name="down_payment" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tanggal DP</label>
+                        <input type="date" name="dp_date" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:w-7/12 flex flex-col">
+            <div class="bg-gradient-to-br from-slate-50 to-white rounded-3xl p-6 border border-slate-100/80 shadow-inner">
+                <h5 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">Daftar Kegiatan</h5>
+                <div id="activity-items-list" class="space-y-3">
+                </div>
+                
+                <div class="mt-6">
+                     <button type="button" onclick="addActivityDetailItem()" 
+                        class="w-full py-3 text-sm font-bold border border-dashed border-slate-300 bg-white hover:bg-blue-50 hover:border-blue-400 hover:text-blue-600 text-slate-500 rounded-2xl transition-all duration-300 flex items-center justify-center group">
+                        <i class="ph ph-plus-circle mr-2 text-lg group-hover:scale-110 transition-transform"></i> Tambah Uraian
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="tpl-activity-item-detail">
+    <div class="activity-detail-item bg-white border border-slate-100 p-4 rounded-2xl flex gap-4 items-start group hover:shadow-lg hover:border-blue-100/50 transition-all duration-300 relative overflow-hidden">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-slate-100 group-hover:bg-blue-400 transition-colors"></div>
+        <div class="flex-1 pt-0.5">
+            <label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-1.5 block group-hover:text-blue-600 transition-colors">Uraian</label>
+            <input type="text" name="activity_desc" required class="input-modern w-full px-2.5 rounded py-1.5 bg-white border-b border-slate-200 focus:border-blue-400 focus:ring-0 text-slate-700 placeholder:text-slate-400" placeholder="Tulis kegiatan di sini...">
+        </div>
+        <button type="button" onclick="this.closest('.activity-detail-item').remove()" class="mt-1 text-slate-300 hover:text-red-500 p-1.5 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100">
+            <i class="ph ph-trash text-lg"></i>
+        </button>
+    </div>
+</template>
+
+<div id="add-btn-container" class="mt-8"></div>
+
+<script define:vars={{ activeTab: 'hotel' }}>
+    let currentTab = 'hotel';
+
+    function renderContent(tab) {
+        const container = document.getElementById('dynamic-form-container');
+        const btnContainer = document.getElementById('add-btn-container');
+        
+        container.innerHTML = '';
+        btnContainer.innerHTML = ''; 
+        
+        if (tab === 'activity') {
+            const template = document.getElementById('tpl-activity-container');
+            if (template) {
+                const clone = template.content.cloneNode(true);
+                container.appendChild(clone);
+                addActivityDetailItem(); 
+            }
+
+        } else {
+            const templateId = `tpl-${tab}-item`;
+            const template = document.getElementById(templateId);
+            
+            if (template) {
+                const clone = template.content.cloneNode(true);
+                container.appendChild(clone);
+            }
+
+            btnContainer.innerHTML = `
+                <button type="button" onclick="addItem('${tab}')" 
+                    class="w-full py-4 text-base font-bold border-2 border-dashed border-slate-200 bg-white/50 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-600 text-slate-500 rounded-3xl transition-all duration-300 flex justify-center items-center shadow-sm hover:shadow-md backdrop-blur-sm">
+                    <i class="ph ph-plus mr-3 text-xl"></i> Tambah Item ${tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+            `;
+        }
+    }
+
+    window.addItem = function(tabType) {
+        const container = document.getElementById('dynamic-form-container');
+        const templateId = `tpl-${tabType}-item`;
+        const template = document.getElementById(templateId);
+        
+        if (template) {
+            const clone = template.content.cloneNode(true);
+            const wrapper = document.createElement('div');
+            wrapper.appendChild(clone);
+            wrapper.firstElementChild.classList.add('fade-in');
+            container.appendChild(wrapper.firstElementChild);
+            
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    }
+
+    window.addActivityDetailItem = function() {
+        const listContainer = document.getElementById('activity-items-list');
+        const template = document.getElementById('tpl-activity-item-detail');
+        
+        if (listContainer && template) {
+            const clone = template.content.cloneNode(true);
+            listContainer.appendChild(clone);
+            
+            setTimeout(() => {
+                listContainer.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 50);
+        }
+    }
+
+    window.toggleCustomMarkup = function(selectElement) {
+        const input = selectElement.nextElementSibling;
+        if (selectElement.value === 'Lainnya') {
+            input.classList.remove('hidden-input');
+            input.disabled = false;
+            input.focus();
+        } else {
+            input.classList.add('hidden-input');
+            input.disabled = true;
+            input.value = '';
+        }
+    }
+
+    document.addEventListener('switch-tab', (e) => {
+        currentTab = e.detail.tab;
+        renderContent(currentTab);
+    });
+
+    document.addEventListener('submit-invoice', async (e) => {
+        const globalData = e.detail.globalData;
+        const items = [];
+        
+        if (currentTab === 'activity') {
+            const fixedInputs = document.querySelectorAll('#dynamic-form-container input[name]:not(.activity-detail-item input)');
+            const activityData = { type: 'activity', fixed: {}, details: [] };
+            
+            fixedInputs.forEach(input => {
+                activityData.fixed[input.name] = input.value;
+            });
+
+            const detailInputs = document.querySelectorAll('.activity-detail-item input');
+            detailInputs.forEach(input => {
+                activityData.details.push(input.value);
+            });
+
+            items.push(activityData);
+
+        } else {
+            const itemGroups = document.querySelectorAll('.item-group');
+            
+            if (itemGroups.length === 0) {
+                alert(`Harap tambahkan minimal satu item untuk tab ${currentTab}`);
+                return;
+            }
+
+            itemGroups.forEach(group => {
+                const itemData = { type: currentTab };
+                const inputs = group.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    // LOGIKA JAVASCRIPT OTOMATIS:
+                    // Jika name SAMA, akan diubah menjadi array.
+                    if (!itemData[input.name]) {
+                        itemData[input.name] = input.value;
+                    } else {
+                        if (!Array.isArray(itemData[input.name])) {
+                            itemData[input.name] = [itemData[input.name]];
+                        }
+                        itemData[input.name].push(input.value);
+                    }
+                });
+                items.push(itemData);
+            });
+        }
+
+        const finalPayload = {
+            customer: globalData,
+            invoiceType: currentTab,
+            items: items,
+            createdAt: new Date().toISOString()
+        };
+
+        const btn = document.querySelector('button[onclick="submitForm()"]');
+        
+        if(btn) {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="ph ph-spinner animate-spin text-xl"></i> Mengirim...`;
+            btn.disabled = true;
+
+            try {
+                const url = 'https://automation.rajawaliservices.digital/webhook-test/invoices';
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(finalPayload)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert("Invoice berhasil dibuat! " + (result.message || ''));
+                } else {
+                    alert("Gagal membuat invoice. Status: " + response.status);
+                }
+
+            } catch (error) {
+                console.error('Error submitting invoice:', error);
+                alert("Terjadi kesalahan saat mengirim data. Cek koneksi internet Anda.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    });
+
+    renderContent(currentTab);
+</script>
