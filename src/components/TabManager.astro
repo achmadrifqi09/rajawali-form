@@ -87,7 +87,7 @@
             </div>
 
             <!-- Financial Section -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Dasar</label>
                     <input type="number" name="base_price" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 font-bold text-slate-800" placeholder="0">
@@ -109,6 +109,10 @@
                         </select>
                         <input type="number" name="markup_custom" class="hidden-input markup-input w-20 px-2 py-2 text-sm font-bold text-slate-800 focus:outline-none" placeholder="%" disabled>
                     </div>
+                </div>
+                 <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Admin Fee</label>
+                    <input type="number" name="admin_fee" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700" placeholder="0">
                 </div>
             </div>
         </div>
@@ -162,7 +166,7 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fee Markup (%)</label>
                     <div class="markup-group h-[46px]">
-                        <select onchange="toggleCustomMarkup(this)" class="markup-select px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none">
+                        <select name="markup" onchange="toggleCustomMarkup(this)" class="markup-select px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none">
                             <option value="5">5%</option>
                             <option value="10">10%</option>
                             <option value="Lainnya">Lainnya</option>
@@ -230,7 +234,7 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fee Markup (%)</label>
                     <div class="markup-group h-[46px]">
-                        <select onchange="toggleCustomMarkup(this)" class="markup-select px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none">
+                        <select name="markup" onchange="toggleCustomMarkup(this)" class="markup-select px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none">
                             <option value="5">5%</option>
                             <option value="10">10%</option>
                             <option value="Lainnya">Lainnya</option>
