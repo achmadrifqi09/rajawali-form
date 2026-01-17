@@ -1,16 +1,17 @@
-
-<div id="dynamic-form-container" class="fade-in">
-</div>
+<div id="dynamic-form-container" class="fade-in"></div>
 
 <style>
+    /* Base Responsive Utilities */
     .markup-group {
         display: flex;
+        flex-direction: row; /* Default row untuk desktop */
         box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
         border-radius: 1rem;
         overflow: hidden;
         transition: all 0.2s ease;
         border: 1px solid #e2e8f0;
         background-color: #f8fafc;
+        height: 46px; /* Fixed height alignment */
     }
     
     .markup-group:focus-within {
@@ -23,6 +24,9 @@
         border: none !important;
         background-color: transparent !important;
         padding-right: 2rem;
+        /* Memastikan text select tidak terpotong di mobile */
+        flex: 1; 
+        min-width: 120px; 
     }
     .markup-select option {
         background-color: white;
@@ -34,72 +38,92 @@
         background-color: transparent !important;
         border-left: 1px solid #e2e8f0 !important;
         text-align: center;
+        width: 60px; /* Lebar default */
+        flex-shrink: 0;
     }
     
     .hidden-input {
         display: none;
     }
+
+    /* Style helper untuk animasi dan item detail */
+    .activity-detail-item {
+        position: relative;
+    }
+    
+    /* Animasi fade in sederhana */
+    .fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 </style>
 
+<!-- 1. TEMPLATE HOTEL -->
 <template id="tpl-hotel-item">
-    <div class="item-group bg-white border border-slate-100/80 rounded-3xl p-6 mb-6 relative group shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-100/30 transition-all duration-300">
-        <button type="button" onclick="this.parentElement.remove()" class="absolute top-5 right-5 text-slate-300 hover:text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition-all duration-200">
-            <i class="ph ph-trash text-xl"></i>
+    <div class="item-group bg-white border border-slate-100/80 rounded-3xl p-4 md:p-6 mb-6 relative group shadow-lg shadow-slate-200/50 transition-all duration-300">
+        <button type="button" onclick="this.parentElement.remove()" class="absolute top-3 right-3 md:top-5 md:right-5 text-slate-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-xl transition-all duration-200 z-20">
+            <i class="ph ph-trash text-lg md:text-xl"></i>
         </button>
-        <div class="pr-10">
-            <h4 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+        <div>
+            <h4 class="text-lg md:text-xl font-bold text-slate-800 mb-4 md:mb-6 flex items-center gap-2">
                 <span class="p-2 bg-blue-50 rounded-lg text-blue-600"><i class="ph ph-bed"></i></span> Detail Hotel
             </h4>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- Grid Mobile: 1 kolom, Desktop: 2 kolom -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Lokasi Akomodasi</label>
-                    <input type="text" name="location" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Lokasi Akomodasi</label>
+                    <input type="text" name="location" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kode Booking</label>
-                    <input type="text" name="booking_code" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kode Booking</label>
+                    <input type="text" name="booking_code" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400 text-sm md:text-base">
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <!-- Grid Mobile: 1 kolom, Desktop: 4 kolom -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tipe Kamar</label>
-                    <input type="text" name="room_type" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tipe Kamar</label>
+                    <input type="text" name="room_type" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check In</label>
-                    <input type="date" name="checkin" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check In</label>
+                    <input type="date" name="checkin" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check Out</label>
-                    <input type="date" name="checkout" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check Out</label>
+                    <input type="date" name="checkout" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Guest Name</label>
-                    <input type="text" name="guest_name" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Guest Name</label>
+                    <input type="text" name="guest_name" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-sm md:text-base">
                 </div>
             </div>
 
             <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 mb-6">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Keterangan</label>
-                <textarea name="remarks" rows="2" class="input-modern w-full px-4 py-3 bg-white rounded-xl border border-slate-100 text-slate-700"></textarea>
+                <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Keterangan</label>
+                <textarea name="remarks" rows="2" class="input-modern w-full px-4 py-3 bg-white rounded-xl border border-slate-100 text-slate-700 text-sm md:text-base"></textarea>
             </div>
 
-            <!-- Financial Section -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <!-- Bagian Harga: Stack di mobile, 4 kolom di desktop -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Dasar</label>
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Dasar</label>
                     <input type="number" name="base_price" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 font-bold text-slate-800" placeholder="0">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qty</label>
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qty</label>
                     <input type="number" name="quantity" required min="1" value="1" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fee Markup (%)</label>
-                    <div class="markup-group h-[46px]">
-                        <select onchange="toggleCustomMarkup(this)" class="markup-select px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none" name="markup">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fee Markup (%)</label>
+                    <!-- Pastikan markup group width 100% -->
+                    <div class="markup-group w-full">
+                        <select onchange="toggleCustomMarkup(this)" class="markup-select px-2 md:px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none" name="markup">
                             <option value="5">5%</option>
                             <option value="10">10%</option>
                             <option value="15">15%</option>
@@ -107,11 +131,11 @@
                             <option value="25">25%</option>
                             <option value="Lainnya">Lainnya</option>
                         </select>
-                        <input type="number" name="markup_custom" class="hidden-input markup-input w-20 px-2 py-2 text-sm font-bold text-slate-800 focus:outline-none" placeholder="%" disabled>
+                        <input type="number" name="markup_custom" class="hidden-input markup-input px-2 py-2 text-sm font-bold text-slate-800 focus:outline-none" placeholder="%" disabled>
                     </div>
                 </div>
                  <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Admin Fee</label>
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Admin Fee</label>
                     <input type="number" name="admin_fee" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700" placeholder="0">
                 </div>
             </div>
@@ -121,67 +145,66 @@
 
 <!-- 2. TEMPLATE PESAWAT -->
 <template id="tpl-flight-item">
-    <div class="item-group bg-white border border-slate-100/80 rounded-3xl p-6 mb-6 relative group shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-100/30 transition-all duration-300">
-        <button type="button" onclick="this.parentElement.remove()" class="absolute top-5 right-5 text-slate-300 hover:text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition-all duration-200">
-            <i class="ph ph-trash text-xl"></i>
+    <div class="item-group bg-white border border-slate-100/80 rounded-3xl p-4 md:p-6 mb-6 relative group shadow-lg shadow-slate-200/50 transition-all duration-300">
+        <button type="button" onclick="this.parentElement.remove()" class="absolute top-3 right-3 md:top-5 md:right-5 text-slate-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-xl transition-all duration-200 z-20">
+            <i class="ph ph-trash text-lg md:text-xl"></i>
         </button>
-        <div class="pr-10">
-            <h4 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+        <div>
+            <h4 class="text-lg md:text-xl font-bold text-slate-800 mb-4 md:mb-6 flex items-center gap-2">
                 <span class="p-2 bg-indigo-50 rounded-lg text-indigo-600"><i class="ph ph-airplane-tilt"></i></span> Detail Penerbangan
             </h4>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
                 <div class="md:col-span-2">
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Rute Pesawat</label>
-                    <input type="text" name="route" required placeholder="Jakarta (CGK) - Bali (DPS)" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Rute Pesawat</label>
+                    <input type="text" name="route" required placeholder="Ex: JAKARTA (CGK) - BALI (DPS)" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kode Booking</label>
-                    <input type="text" name="booking_code" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kode Booking</label>
+                    <input type="text" name="booking_code" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tanggal Keberangkatan</label>
-                    <input type="date" name="depart_date" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tanggal Keberangkatan</label>
+                    <input type="date" name="depart_date" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Passenger</label>
-                    <input type="text" name="passenger_name" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Passenger</label>
+                    <input type="text" name="passenger_name" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Seat</label>
-                    <input type="text" name="seat" required placeholder="Ex: 14A" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Seat</label>
+                    <input type="text" name="seat" required placeholder="Ex: 14A" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-sm md:text-base">
                 </div>
             </div>
             
-            <!-- Financial Section -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Dasar</label>
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Dasar</label>
                     <input type="number" name="base_price" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 font-bold text-slate-800" placeholder="0">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qty</label>
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qty</label>
                     <input type="number" name="quantity" required min="1" value="1" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fee Markup (%)</label>
-                    <div class="markup-group h-[46px]">
-                        <select name="markup" onchange="toggleCustomMarkup(this)" class="markup-select px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fee Markup (%)</label>
+                    <div class="markup-group w-full">
+                        <select name="markup" onchange="toggleCustomMarkup(this)" class="markup-select px-2 md:px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none">
                             <option value="5">5%</option>
                             <option value="10">10%</option>
                             <option value="Lainnya">Lainnya</option>
                         </select>
-                        <input type="number" name="markup_custom" class="hidden-input markup-input w-20 px-2 py-2 text-sm font-bold text-slate-800 focus:outline-none" placeholder="%" disabled>
+                        <input type="number" name="markup_custom" class="hidden-input markup-input px-2 py-2 text-sm font-bold text-slate-800 focus:outline-none" placeholder="%" disabled>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Admin Fee</label>
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Admin Fee</label>
                     <input type="number" name="admin_fee" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700" placeholder="0">
                 </div>
             </div>
             <div class="mt-4">
-                 <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Keterangan</label>
-                 <input type="text" name="remarks" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                 <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Keterangan</label>
+                 <input type="text" name="remarks" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-sm md:text-base">
             </div>
         </div>
     </div>
@@ -189,127 +212,122 @@
 
 <!-- 3. TEMPLATE KERETA -->
 <template id="tpl-train-item">
-    <div class="item-group bg-white border border-slate-100/80 rounded-3xl p-6 mb-6 relative group shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-100/30 transition-all duration-300">
-        <button type="button" onclick="this.parentElement.remove()" class="absolute top-5 right-5 text-slate-300 hover:text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition-all duration-200">
-            <i class="ph ph-trash text-xl"></i>
+    <div class="item-group bg-white border border-slate-100/80 rounded-3xl p-4 md:p-6 mb-6 relative group shadow-lg shadow-slate-200/50 transition-all duration-300">
+        <button type="button" onclick="this.parentElement.remove()" class="absolute top-3 right-3 md:top-5 md:right-5 text-slate-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-xl transition-all duration-200 z-20">
+            <i class="ph ph-trash text-lg md:text-xl"></i>
         </button>
-        <div class="pr-10">
-            <h4 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+        <div>
+            <h4 class="text-lg md:text-xl font-bold text-slate-800 mb-4 md:mb-6 flex items-center gap-2">
                 <span class="p-2 bg-emerald-50 rounded-lg text-emerald-600"><i class="ph ph-train"></i></span> Detail Kereta
             </h4>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
                 <div class="md:col-span-2">
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Rute Kereta</label>
-                    <input type="text" name="route" required placeholder="Gambir - Yogyakarta" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Rute Kereta</label>
+                    <input type="text" name="route" required placeholder="Ex: Gambir (GMR) - Yogyakarta (YK)" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 placeholder-slate-400 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kode Booking</label>
-                    <input type="text" name="booking_code" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kode Booking</label>
+                    <input type="text" name="booking_code" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tanggal Keberangkatan</label>
-                    <input type="date" name="depart_date" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tanggal Keberangkatan</label>
+                    <input type="date" name="depart_date" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Passenger</label>
-                    <input type="text" name="passenger_name" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Passenger</label>
+                    <input type="text" name="passenger_name" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-sm md:text-base">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Seat / Wagon</label>
-                    <input type="text" name="seat" required placeholder="Ex: 3A" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Seat / Wagon</label>
+                    <input type="text" name="seat" required placeholder="Ex: 3A" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-sm md:text-base">
                 </div>
             </div>
             
-            <!-- Financial Section -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Dasar</label>
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Dasar</label>
                     <input type="number" name="base_price" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 font-bold text-slate-800" placeholder="0">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qty</label>
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Qty</label>
                     <input type="number" name="quantity" required min="1" value="1" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fee Markup (%)</label>
-                    <div class="markup-group h-[46px]">
-                        <select name="markup" onchange="toggleCustomMarkup(this)" class="markup-select px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none">
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fee Markup (%)</label>
+                    <div class="markup-group w-full">
+                        <select name="markup" onchange="toggleCustomMarkup(this)" class="markup-select px-2 md:px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none">
                             <option value="5">5%</option>
                             <option value="10">10%</option>
                             <option value="Lainnya">Lainnya</option>
                         </select>
-                        <input type="number" name="markup_custom" class="hidden-input markup-input w-20 px-2 py-2 text-sm font-bold text-slate-800 focus:outline-none" placeholder="%" disabled>
+                        <input type="number" name="markup_custom" class="hidden-input markup-input px-2 py-2 text-sm font-bold text-slate-800 focus:outline-none" placeholder="%" disabled>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Admin Fee</label>
+                    <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Admin Fee</label>
                     <input type="number" name="admin_fee" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700" placeholder="0">
                 </div>
             </div>
             <div class="mt-4">
-                 <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Keterangan</label>
-                 <input type="text" name="remarks" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
+                 <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Keterangan</label>
+                 <input type="text" name="remarks" class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-sm md:text-base">
             </div>
         </div>
     </div>
 </template>
 
+<!-- 4. TEMPLATE ACTIVITY CONTAINER -->
 <template id="tpl-activity-container">
-    <div class="flex flex-col lg:flex-row gap-8">
-        <div class="lg:w-5/12">
-            <div class="sticky top-4 bg-white border border-slate-100/80 rounded-3xl p-8 shadow-xl shadow-blue-100/20 backdrop-blur-sm">
-                <h4 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-                    <span class="p-2 bg-orange-50 rounded-lg text-orange-500"><i class="ph ph-info"></i></span> Info Paket
+    <!-- Flex Mobile: Column, Desktop: Row -->
+    <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
+        <!-- Kiri: Info Paket (Di mobile jadi paling atas) -->
+        <div class="lg:w-5/12 w-full order-1 lg:order-1">
+            <div class="sticky top-4 bg-white border border-slate-100/80 rounded-3xl p-6 shadow-xl shadow-blue-100/20 backdrop-blur-sm">
+                <h4 class="text-lg md:text-xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                    <span class="p-2 bg-orange-50 rounded-lg text-orange-500"><i class="ph ph-info"></i></span> Info Paket & DP
                 </h4>
                 
                 <div class="space-y-5">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Paket</label>
+                        <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Paket</label>
                         <input type="text" name="package_name" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check In</label>
+                            <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check In</label>
                             <input type="date" name="checkin" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check Out</label>
+                            <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Check Out</label>
                             <input type="date" name="checkout" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Pax</label>
-                            <input type="number" name="pax" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Harga Paket</label>
-                            <input type="number" name="base_price" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
-                        </div>
-                    </div>
+                     
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Down Payment</label>
+                        <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nominal DP</label>
                         <input type="number" name="down_payment" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tanggal DP</label>
+                        <label class="block text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tanggal DP</label>
                         <input type="date" name="dp_date" required class="input-modern w-full px-4 py-3 bg-slate-50/50 rounded-xl border border-slate-100 text-slate-700 text-slate-500">
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="lg:w-7/12 flex flex-col">
-            <div class="bg-gradient-to-br from-slate-50 to-white rounded-3xl p-6 border border-slate-100/80 shadow-inner">
-                <h5 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">Daftar Kegiatan</h5>
-                <div id="activity-items-list" class="space-y-3">
+        <!-- Kanan: Daftar Kegiatan -->
+        <div class="lg:w-7/12 w-full flex flex-col order-2 lg:order-2">
+            <div class="bg-gradient-to-br from-slate-50 to-white rounded-3xl p-4 md:p-6 border border-slate-100/80 shadow-inner">
+                <h5 class="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 md:mb-6">Daftar Kegiatan</h5>
+
+                <div id="activity-items-list" class="space-y-4">
                 </div>
                 
                 <div class="mt-6">
                      <button type="button" onclick="addActivityDetailItem()" 
-                        class="w-full py-3 text-sm font-bold border border-dashed border-slate-300 bg-white hover:bg-blue-50 hover:border-blue-400 hover:text-blue-600 text-slate-500 rounded-2xl transition-all duration-300 flex items-center justify-center group">
-                        <i class="ph ph-plus-circle mr-2 text-lg group-hover:scale-110 transition-transform"></i> Tambah Uraian
+                        class="w-full py-3 text-xs md:text-sm font-bold border border-dashed border-slate-300 bg-white hover:bg-blue-50 hover:border-blue-400 hover:text-blue-600 text-slate-500 rounded-2xl transition-all duration-300 flex items-center justify-center group">
+                        <i class="ph ph-plus-circle mr-2 text-lg group-hover:scale-110 transition-transform"></i> Tambah Kegiatan
                     </button>
                 </div>
             </div>
@@ -318,14 +336,79 @@
 </template>
 
 <template id="tpl-activity-item-detail">
-    <div class="activity-detail-item bg-white border border-slate-100 p-4 rounded-2xl flex gap-4 items-start group hover:shadow-lg hover:border-blue-100/50 transition-all duration-300 relative overflow-hidden">
-        <div class="absolute left-0 top-0 bottom-0 w-1 bg-slate-100 group-hover:bg-blue-400 transition-colors"></div>
-        <div class="flex-1 pt-0.5">
-            <label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-1.5 block group-hover:text-blue-600 transition-colors">Uraian</label>
-            <input type="text" name="activity_desc" required class="input-modern w-full px-2.5 rounded py-1.5 bg-white border-b border-slate-200 focus:border-blue-400 focus:ring-0 text-slate-700 placeholder:text-slate-400" placeholder="Tulis kegiatan di sini...">
+    <div class="activity-detail-item bg-white border border-slate-200 p-4 md:p-5 rounded-2xl shadow-sm group hover:shadow-md hover:border-blue-300 transition-all duration-300 relative">
+
+        <button type="button" onclick="this.closest('.activity-detail-item').remove()" class="absolute -top-2 -right-2 md:top-2 md:right-2 z-20 text-slate-300 hover:text-red-500 p-1.5 bg-white hover:bg-red-50 shadow-sm rounded-full transition-all">
+            <i class="ph ph-trash text-lg w-5 h-5"></i>
+        </button>
+
+        <div class="space-y-4">
+            <!-- SECTION 1: Activity Base Info -->
+            <div class="flex flex-col gap-3 pb-3 border-b border-slate-100">
+                <span class="bg-orange-100 text-orange-600 text-[10px] md:text-xs font-bold px-2 py-1 rounded uppercase tracking-wide w-max">Activity</span>
+                
+                <!-- Flex mobile: column, desktop: row -->
+                <div class="flex flex-col md:flex-row gap-2.5 w-full">
+                    <div class="w-full">
+                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Harga Dasar (Base Price)</label>
+                         <input type="number" name="act_base_price" required 
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-semibold transition-all"
+                            placeholder="0">
+                    </div>
+                     <div class="w-full">
+                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Pax</label>
+                         <input type="number" name="act_pax" required 
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-semibold transition-all"
+                            placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: Fee Info -->
+            <div class="flex flex-col gap-3 pb-3 border-b border-slate-100">
+                <span class="bg-orange-100 text-orange-600 text-[10px] md:text-xs font-bold px-2 py-1 rounded uppercase tracking-wide w-max">Fee</span>
+                <!-- Flex mobile: column, desktop: row -->
+                <div class="flex flex-col md:flex-row gap-2.5 w-full">
+                        <div class="w-full">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Fee Markup (%)</label>
+                            <div class="markup-group w-full h-[42px] !rounded-lg">
+                               <select name="act_markup" onchange="toggleCustomMarkup(this)" class="markup-select px-4 py-2 w-full text-sm text-slate-700 font-medium focus:outline-none">
+                                   <option value="5">5%</option>
+                                   <option value="10">10%</option>
+                                   <option value="Lainnya">Lainnya</option>
+                               </select>
+                               <input type="number" name="act_markup_custom" class="hidden-input markup-input px-2 py-2 text-sm font-bold text-slate-800 focus:outline-none" placeholder="%" disabled>
+                           </div>
+                        </div>
+                       <div class="w-full">
+                           <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Admin Fee</label>
+                           <input type="number" name="act_admin_fee" required 
+                              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-semibold transition-all"
+                              placeholder="0">
+                        </div>
+                    </div>
+            </div>
+
+            <div class="act-items-container space-y-2 pl-0 md:pl-2">
+            </div>
+
+            <div class="pt-2">
+                 <button type="button" onclick="addActivityItemRow(this)" class="text-xs font-bold text-blue-500 hover:text-blue-700 flex items-center gap-1 transition-colors">
+                    <i class="ph ph-plus-circle"></i> Tambah Item Uraian
+                 </button>
+            </div>
         </div>
-        <button type="button" onclick="this.closest('.activity-detail-item').remove()" class="mt-1 text-slate-300 hover:text-red-500 p-1.5 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100">
-            <i class="ph ph-trash text-lg"></i>
+    </div>
+</template>
+
+<template id="tpl-activity-row-item">
+    <div class="activity-row-item flex gap-2 animate-fade-in items-center w-full min-w-0">
+
+        <input type="text" name="act_item_name" 
+            class="flex-1 min-w-0 px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg text-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" 
+            placeholder="Nama item (cth: Tiket Masuk, Makan Siang)">
+        <button type="button" onclick="this.parentElement.remove()" class="flex-shrink-0 text-slate-300 hover:text-red-500 p-2.5 bg-transparent rounded-lg transition-colors">
+            <i class="ph ph-x text-lg"></i>
         </button>
     </div>
 </template>
@@ -390,11 +473,26 @@
         
         if (listContainer && template) {
             const clone = template.content.cloneNode(true);
+            const rowContainer = clone.querySelector('.act-items-container');
+            const rowTemplate = document.getElementById('tpl-activity-row-item');
+            if(rowTemplate && rowContainer) {
+                rowContainer.appendChild(rowTemplate.content.cloneNode(true));
+            }
+
             listContainer.appendChild(clone);
             
             setTimeout(() => {
                 listContainer.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 50);
+        }
+    }
+
+    window.addActivityItemRow = function(btnElement) {
+        const container = btnElement.closest('.activity-detail-item').querySelector('.act-items-container');
+        const template = document.getElementById('tpl-activity-row-item');
+        
+        if (container && template) {
+            container.appendChild(template.content.cloneNode(true));
         }
     }
 
@@ -418,24 +516,68 @@
 
     document.addEventListener('submit-invoice', async (e) => {
         const globalData = e.detail.globalData;
-        const items = [];
-        
+        let finalPayload = {};
+
+        finalPayload.customer = globalData;
+        finalPayload.invoiceType = currentTab;
+        finalPayload.createdAt = new Date().toISOString();
+
         if (currentTab === 'activity') {
-            const fixedInputs = document.querySelectorAll('#dynamic-form-container input[name]:not(.activity-detail-item input)');
-            const activityData = { type: 'activity', fixed: {}, details: [] };
+            const fixedInputs = document.querySelectorAll('#dynamic-form-container input:not(.activity-detail-item input):not(.activity-row-item input)');
+            const detailData = {};
             
             fixedInputs.forEach(input => {
-                activityData.fixed[input.name] = input.value;
+                if(input.value) {
+                    detailData[input.name] = input.value;
+                }
+            });
+            
+            const markupSelect = document.querySelector('#dynamic-form-container select[name="markup"]');
+            const markupInput = document.querySelector('#dynamic-form-container input[name="markup_custom"]');
+            
+            if (markupSelect && markupInput) {
+                 if (markupSelect.value === 'Lainnya') {
+                    detailData.markup = markupInput.value;
+                } else {
+                    detailData.markup = markupSelect.value;
+                }
+                if (!detailData.markup_custom) detailData.markup_custom = "";
+            }
+
+            const activitiesData = [];
+            const activityGroups = document.querySelectorAll('.activity-detail-item');
+
+            activityGroups.forEach(group => {
+                const basePrice = group.querySelector('input[name="act_base_price"]').value;
+                const pax = group.querySelector('input[name="act_pax"]').value;
+                const customMarkup = group.querySelector('input[name="act_markup_custom"]').value;
+                const markup = group.querySelector('select[name="act_markup"]').value;
+
+                const itemRows = group.querySelectorAll('input[name="act_item_name"]');
+                const items = [];
+
+                itemRows.forEach(row => {
+                    if (row.value.trim() !== "") {
+                        items.push(row.value);
+                    }
+                });
+
+                activitiesData.push({
+                    base_price: basePrice,
+                    pax: pax,
+                    custom_markup: customMarkup,
+                    markup: markup,
+                    items: items
+                });
             });
 
-            const detailInputs = document.querySelectorAll('.activity-detail-item input');
-            detailInputs.forEach(input => {
-                activityData.details.push(input.value);
-            });
-
-            items.push(activityData);
+            finalPayload.data = {
+                detail: detailData,
+                activities: activitiesData
+            };
 
         } else {
+            const items = [];
             const itemGroups = document.querySelectorAll('.item-group');
             
             if (itemGroups.length === 0) {
@@ -447,27 +589,15 @@
                 const itemData = { type: currentTab };
                 const inputs = group.querySelectorAll('input, select, textarea');
                 inputs.forEach(input => {
-                    // LOGIKA JAVASCRIPT OTOMATIS:
-                    // Jika name SAMA, akan diubah menjadi array.
-                    if (!itemData[input.name]) {
-                        itemData[input.name] = input.value;
-                    } else {
-                        if (!Array.isArray(itemData[input.name])) {
-                            itemData[input.name] = [itemData[input.name]];
-                        }
-                        itemData[input.name].push(input.value);
-                    }
+                    if(input.name) itemData[input.name] = input.value;
                 });
                 items.push(itemData);
             });
+
+            finalPayload.items = items;
         }
 
-        const finalPayload = {
-            customer: globalData,
-            invoiceType: currentTab,
-            items: items,
-            createdAt: new Date().toISOString()
-        };
+        console.log("FINAL PAYLOAD:", JSON.stringify(finalPayload, null, 2));
 
         const btn = document.querySelector('button[onclick="submitForm()"]');
         
@@ -477,7 +607,7 @@
             btn.disabled = true;
 
             try {
-                const url = 'https://automation.rajawaliservices.digital/webhook-test/invoices';
+                const url = 'https://automation.rajawaliservices.digital/webhook/invoices';
                 
                 const response = await fetch(url, {
                     method: 'POST',
